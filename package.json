@@ -1,5 +1,5 @@
 {
-  "name": "my-sunhat-project",
+  "name": "x402-contracts",
   "version": "1.0.0",
   "devDependencies": {
     "dotenv": "^16.4.7",
@@ -11,13 +11,14 @@
   },
   "scripts": {
     "start": "hardhat node",
-    "compile": "hardhat compile",
-    "clean": "hardhat clean",
+    "compile": "hardhat compile --verbose --force",
+    "clean": "hardhat clean && rm -rf lib/",
     "test": "hardhat test",
     "test-foundry": "forge test -vvv",
     "coverage": "hardhat coverage",
     "audit": "hardhat audit",
     "vscode-audit": "hardhat audit --format json",
-    "deploy": "hardhat deploy --network tron"
+    "deploy": "hardhat deploy --network tron",
+    "postinstall": "sh scripts/postinstall.sh && echo 'Post-installation script executed successfully.'"
   }
 }
