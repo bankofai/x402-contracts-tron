@@ -6,6 +6,7 @@ import {IEIP712} from "./IEIP712.sol";
 interface IPaymentPermit is IEIP712 {
     struct PaymentPermitDetails {
         PermitMeta meta;
+        address buyer;
         address caller;
         Payment payment;
         Fee fee;
