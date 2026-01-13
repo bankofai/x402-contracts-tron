@@ -11,20 +11,21 @@ library PermitHash {
     
     // Sort referenced structs alphabetically: Delivery, Fee, Payment, PermitMeta
     bytes32 public constant PAYMENT_PERMIT_DETAILS_TYPEHASH = keccak256(
-        "PaymentPermitDetails(PermitMeta meta,address caller,Payment payment,Fee fee,Delivery delivery)Delivery(address receiveToken,uint256 miniReceiveAmount,uint256 tokenId)Fee(address feeTo,uint256 feeAmount)Payment(address payToken,uint256 maxPayAmount,address payTo)PermitMeta(uint8 kind,bytes16 paymentId,uint256 nonce,uint256 validAfter,uint256 validBefore)"
+        "PaymentPermitDetails(PermitMeta meta,address buyer,address caller,Payment payment,Fee fee,Delivery delivery)Delivery(address receiveToken,uint256 miniReceiveAmount,uint256 tokenId)Fee(address feeTo,uint256 feeAmount)Payment(address payToken,uint256 maxPayAmount,address payTo)PermitMeta(uint8 kind,bytes16 paymentId,uint256 nonce,uint256 validAfter,uint256 validBefore)"
     );
 
     bytes32 public constant CALLBACK_DETAILS_TYPEHASH = keccak256("CallbackDetails(address callbackTarget,bytes callbackData)");
 
     // Sort structs: CallbackDetails, Delivery, Fee, Payment, PaymentPermitDetails, PermitMeta
     bytes32 public constant PAYMENT_PERMIT_WITH_CALLBACK_TYPEHASH = keccak256(
-        "PaymentPermitWithCallback(PaymentPermitDetails permit,CallbackDetails callback)CallbackDetails(address callbackTarget,bytes callbackData)Delivery(address receiveToken,uint256 miniReceiveAmount,uint256 tokenId)Fee(address feeTo,uint256 feeAmount)Payment(address payToken,uint256 maxPayAmount,address payTo)PaymentPermitDetails(PermitMeta meta,address caller,Payment payment,Fee fee,Delivery delivery)PermitMeta(uint8 kind,bytes16 paymentId,uint256 nonce,uint256 validAfter,uint256 validBefore)"
+        "PaymentPermitWithCallback(PaymentPermitDetails permit,CallbackDetails callback)CallbackDetails(address callbackTarget,bytes callbackData)Delivery(address receiveToken,uint256 miniReceiveAmount,uint256 tokenId)Fee(address feeTo,uint256 feeAmount)Payment(address payToken,uint256 maxPayAmount,address payTo)PaymentPermitDetails(PermitMeta meta,address buyer,address caller,Payment payment,Fee fee,Delivery delivery)PermitMeta(uint8 kind,bytes16 paymentId,uint256 nonce,uint256 validAfter,uint256 validBefore)"
     );
 
     function hash(IPaymentPermit.PaymentPermitDetails memory permit) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             PAYMENT_PERMIT_DETAILS_TYPEHASH,
             hash(permit.meta),
+            permit.buyer,
             permit.caller,
             hash(permit.payment),
             hash(permit.fee),
