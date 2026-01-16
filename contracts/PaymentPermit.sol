@@ -22,7 +22,7 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
         address owner,
         bytes calldata signature
     ) external override {
-        if (owner != permit.buyer) revert InvalidSignature();
+        if (owner != permit.buyer) revert BuyerMismatch();
         if (permit.meta.kind != 0) revert InvalidKind();
         if (block.timestamp < permit.meta.validAfter || block.timestamp > permit.meta.validBefore) revert InvalidTimestamp();
         if (permit.caller != address(0) && msg.sender != permit.caller) revert InvalidCaller();
@@ -52,7 +52,7 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
         address owner,
         bytes calldata signature
     ) external override {
-        if (owner != permit.buyer) revert InvalidSignature();
+        if (owner != permit.buyer) revert BuyerMismatch();
         if (permit.meta.kind != 1) revert InvalidKind();
         if (block.timestamp < permit.meta.validAfter || block.timestamp > permit.meta.validBefore) revert InvalidTimestamp();
         if (permit.caller != address(0) && msg.sender != permit.caller) revert InvalidCaller();

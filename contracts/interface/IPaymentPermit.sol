@@ -59,6 +59,7 @@ interface IPaymentPermit is IEIP712 {
     error NonceAlreadyUsed();
     error InvalidDelivery();
     error InvalidKind();
+    error BuyerMismatch();
 
     // Functions
     function permitTransferFrom(

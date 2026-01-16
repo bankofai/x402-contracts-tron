@@ -111,6 +111,14 @@ contract PaymentPermitTest is Test {
         paymentPermit.permitTransferFrom(permit, IPaymentPermit.TransferDetails(100 ether), owner, signature);
     }
 
+    function testRevertBuyerMismatch() public {
+        IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(100 ether, 0);
+        bytes memory signature = _signPermit(permit);
+        
+        vm.expectRevert(IPaymentPermit.BuyerMismatch.selector);
+        paymentPermit.permitTransferFrom(permit, IPaymentPermit.TransferDetails(100 ether), address(0xDEAD), signature);
+    }
+
     function testRevertInvalidKind_Normal() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(100 ether, 0);
         permit.meta.kind = 1; // Wrong kind for normal transfer
