@@ -34,6 +34,8 @@ contract MerchantAgent is IAgentExecInterface {
     }
 
     function Execute(bytes calldata data) external override {
+        // TODO: check msg.sender
+        
         (address buyer, IPaymentPermit.Delivery memory delivery) = abi.decode(data, (address, IPaymentPermit.Delivery));
         
         if (delivery.receiveToken != address(0) && delivery.miniReceiveAmount > 0) {
