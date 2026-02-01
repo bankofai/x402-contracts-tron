@@ -14,7 +14,7 @@ interface IPaymentPermit is IEIP712 {
     }
 
     struct PermitMeta {
-        uint8 kind;      // 0: PAYMENT_ONLY, 1: PAYMENT_AND_DELIVERY
+        uint8 kind; // 0: PAYMENT_ONLY, 1: PAYMENT_AND_DELIVERY
         bytes16 paymentId;
         uint256 nonce;
         uint256 validAfter;
@@ -42,13 +42,12 @@ interface IPaymentPermit is IEIP712 {
         uint256 amount;
     }
 
-    struct CallbackDetails {
-        address callbackTarget;
-        bytes callbackData;
-    }
-    
     // Events
-    event PermitTransfer(address indexed buyer, bytes16 indexed paymentId, uint256 amount);
+    event PermitTransfer(
+        address indexed buyer,
+        bytes16 indexed paymentId,
+        uint256 amount
+    );
 
     // Errors
     error InvalidTimestamp();
@@ -63,20 +62,18 @@ interface IPaymentPermit is IEIP712 {
 
     // Functions
     function permitTransferFrom(
-        PaymentPermitDetails calldata permit, 
-        TransferDetails calldata transferDetails, 
-        address owner,
-        bytes calldata signature
-    ) external;
-
-    function permitTransferFromWithCallback(
-        PaymentPermitDetails calldata permit, 
-        CallbackDetails calldata callbackDetails,
+        PaymentPermitDetails calldata permit,
         TransferDetails calldata transferDetails,
         address owner,
         bytes calldata signature
     ) external;
-    
-    function nonceBitmap(address owner, uint256 wordPos) external view returns (uint256);
-    function nonceUsed(address owner, uint256 nonce) external view returns (bool);
+
+    function nonceBitmap(
+        address owner,
+        uint256 wordPos
+    ) external view returns (uint256);
+    function nonceUsed(
+        address owner,
+        uint256 nonce
+    ) external view returns (bool);
 }
