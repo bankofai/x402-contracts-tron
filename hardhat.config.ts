@@ -38,7 +38,7 @@ const config: HardhatUserConfig = {
       tron: true, // enable nile network
       deploy: ['deploy/'], // folder for nile deploy scripts
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [], // account private key for deploy
-    }
+    },
     shasta: {
       url: process.env.TRON_RPC_URL || 'https://api.shasta.trongrid.io/jsonrpc', // shasta rpc url
       tron: true, // enable shasta network
