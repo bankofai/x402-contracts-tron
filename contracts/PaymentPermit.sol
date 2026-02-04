@@ -25,8 +25,7 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
             block.timestamp < permit.meta.validAfter ||
             block.timestamp > permit.meta.validBefore
         ) revert InvalidTimestamp();
-        if (permit.caller != address(0) && msg.sender != permit.caller)
-            revert InvalidCaller();
+        if (msg.sender != permit.caller) revert InvalidCaller();
         if (transferDetails.amount > permit.payment.maxPayAmount)
             revert InvalidAmount();
 

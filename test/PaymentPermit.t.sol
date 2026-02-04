@@ -49,7 +49,8 @@ contract PaymentPermitTest is Test {
     function testPermitTransferFrom() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            1 ether
+            1 ether,
+            address(0xCA11EB)
         );
         bytes memory signature = _signPermit(permit);
 
@@ -76,7 +77,8 @@ contract PaymentPermitTest is Test {
     function testRevertNonceUsed() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            0
+            0,
+            address(this)
         );
         bytes memory signature = _signPermit(permit);
 
@@ -102,7 +104,8 @@ contract PaymentPermitTest is Test {
     function testRevertExpired() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            0
+            0,
+            address(this)
         );
         permit.meta.validBefore = block.timestamp - 1;
 
@@ -119,7 +122,8 @@ contract PaymentPermitTest is Test {
     function testRevertSignatureError() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            0
+            0,
+            address(this)
         );
         bytes memory signature = _signPermit(permit);
 
@@ -138,7 +142,8 @@ contract PaymentPermitTest is Test {
     function testRevertBuyerMismatch() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            0
+            0,
+            address(this)
         );
         bytes memory signature = _signPermit(permit);
 
@@ -154,7 +159,8 @@ contract PaymentPermitTest is Test {
     function testRevertInvalidKind_Normal() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
-            0
+            0,
+            address(this)
         );
         permit.meta.kind = 1; // Wrong kind for normal transfer
         bytes memory signature = _signPermit(permit);
@@ -171,7 +177,8 @@ contract PaymentPermitTest is Test {
     // Helpers
     function _createPermit(
         uint256 amount,
-        uint256 fee
+        uint256 fee,
+        address caller
     ) internal view returns (IPaymentPermit.PaymentPermitDetails memory) {
         return
             IPaymentPermit.PaymentPermitDetails({
@@ -183,7 +190,7 @@ contract PaymentPermitTest is Test {
                     validBefore: block.timestamp + 1000
                 }),
                 buyer: owner,
-                caller: address(0),
+                caller: caller,
                 payment: IPaymentPermit.Payment({
                     payToken: address(token),
                     maxPayAmount: amount,
