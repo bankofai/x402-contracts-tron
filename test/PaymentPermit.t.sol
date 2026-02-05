@@ -59,7 +59,6 @@ contract PaymentPermitTest is Test {
             owner,
             permit.meta.paymentId,
             address(token),
-            owner,
             receiver,
             100 ether
         );

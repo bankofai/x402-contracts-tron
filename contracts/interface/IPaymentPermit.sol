@@ -43,7 +43,6 @@ interface IPaymentPermit is IEIP712 {
         address indexed buyer,
         bytes16 indexed paymentId,
         address indexed payToken,
-        address payer,
         address payTo,
         uint256 amount
     );

@@ -61,7 +61,6 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
             owner,
             permit.meta.paymentId,
             permit.payment.payToken,
-            owner,
             permit.payment.payTo,
             permit.payment.payAmount
         );
