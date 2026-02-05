@@ -44,9 +44,9 @@ Flow: **User signs** `PaymentPermitDetails` (payment, fee, validity, nonce) → 
 
 | Network   | Chain / Environment | PaymentPermit Address |
 |-----------|---------------------|------------------------|
-| **TRON Mainnet** | Mainnet              | `TQr1nSWDLWgmJ3tkbFZANnaFcB5ci7Hvxa` |
-| **Nile**         | Testnet              | `TVjYLoXatyMkemxzeB9M8ZE3uGttR9QZJ8` |
-| **Shasta**       | Testnet              | `THnW1E6yQWgx9P3QtSqWw2t3qGwH35jARg` |
+| **TRON Mainnet** | Mainnet              | `THnW1E6yQWgx9P3QtSqWw2t3qGwH35jARg` |
+| **Nile**         | Testnet              | `TQr1nSWDLWgmJ3tkbFZANnaFcB5ci7Hvxa` |
+| **Shasta**       | Testnet              | `TVjYLoXatyMkemxzeB9M8ZE3uGttR9QZJ8` |
 
 - **Mainnet**: Production; use after audit and deployment.
 - **Nile**: Primary testnet for integration and staging.
