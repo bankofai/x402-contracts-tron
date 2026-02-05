@@ -15,7 +15,6 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
 
     function permitTransferFrom(
         PaymentPermitDetails calldata permit,
-        TransferDetails calldata transferDetails,
         address owner,
         bytes calldata signature
     ) external override {
@@ -26,8 +25,6 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
             block.timestamp > permit.meta.validBefore
         ) revert InvalidTimestamp();
         if (msg.sender != permit.caller) revert InvalidCaller();
-        if (transferDetails.amount > permit.payment.maxPayAmount)
-            revert InvalidAmount();
 
         _useNonce(owner, permit.meta.nonce);
 
@@ -42,7 +39,7 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
                 permit.payment.payToken,
                 owner,
                 permit.payment.payTo,
-                transferDetails.amount
+                permit.payment.payAmount
             ),
             "Payment failed"
         );
@@ -63,7 +60,10 @@ contract PaymentPermit is IPaymentPermit, EIP712 {
         emit PermitTransfer(
             owner,
             permit.meta.paymentId,
-            transferDetails.amount
+            permit.payment.payToken,
+            owner,
+            permit.payment.payTo,
+            permit.payment.payAmount
         );
     }
 

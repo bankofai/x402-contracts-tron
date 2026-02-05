@@ -23,7 +23,7 @@ interface IPaymentPermit is IEIP712 {
 
     struct Payment {
         address payToken;
-        uint256 maxPayAmount;
+        uint256 payAmount;
         address payTo;
     }
 
@@ -38,21 +38,19 @@ interface IPaymentPermit is IEIP712 {
         uint256 tokenId;
     }
 
-    struct TransferDetails {
-        uint256 amount;
-    }
-
     // Events
     event PermitTransfer(
         address indexed buyer,
         bytes16 indexed paymentId,
+        address indexed payToken,
+        address payer,
+        address payTo,
         uint256 amount
     );
 
     // Errors
     error InvalidTimestamp();
     error InvalidCaller();
-    error InvalidAmount();
     error InvalidNonce();
     error InvalidSignature();
     error NonceAlreadyUsed();
@@ -63,7 +61,6 @@ interface IPaymentPermit is IEIP712 {
     // Functions
     function permitTransferFrom(
         PaymentPermitDetails calldata permit,
-        TransferDetails calldata transferDetails,
         address owner,
         bytes calldata signature
     ) external;
@@ -72,6 +69,7 @@ interface IPaymentPermit is IEIP712 {
         address owner,
         uint256 wordPos
     ) external view returns (uint256);
+
     function nonceUsed(
         address owner,
         uint256 nonce

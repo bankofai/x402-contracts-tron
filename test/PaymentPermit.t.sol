@@ -46,6 +46,26 @@ contract PaymentPermitTest is Test {
         token.approve(address(paymentPermit), type(uint256).max);
     }
 
+    function testPermitTransferEvent() public {
+        IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
+            100 ether,
+            1 ether,
+            address(this)
+        );
+        bytes memory signature = _signPermit(permit);
+
+        vm.expectEmit(true, true, true, true);
+        emit IPaymentPermit.PermitTransfer(
+            owner,
+            permit.meta.paymentId,
+            address(token),
+            owner,
+            receiver,
+            100 ether
+        );
+
+        paymentPermit.permitTransferFrom(permit, owner, signature);
+    }
     function testPermitTransferFrom() public {
         IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
             100 ether,
@@ -54,21 +74,11 @@ contract PaymentPermitTest is Test {
         );
         bytes memory signature = _signPermit(permit);
 
-        IPaymentPermit.TransferDetails memory transferDetails = IPaymentPermit
-            .TransferDetails({
-                amount: 50 ether // Transfer less than max
-            });
-
         vm.prank(address(0xCA11EB)); // Arbitrary caller
-        paymentPermit.permitTransferFrom(
-            permit,
-            transferDetails,
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
 
-        assertEq(token.balanceOf(owner), 1000 ether - 50 ether - 1 ether);
-        assertEq(token.balanceOf(receiver), 50 ether);
+        assertEq(token.balanceOf(owner), 1000 ether - 100 ether - 1 ether);
+        assertEq(token.balanceOf(receiver), 100 ether);
         assertEq(token.balanceOf(feeReceiver), 1 ether);
 
         assertTrue(paymentPermit.nonceUsed(owner, permit.meta.nonce));
@@ -82,23 +92,10 @@ contract PaymentPermitTest is Test {
         );
         bytes memory signature = _signPermit(permit);
 
-        IPaymentPermit.TransferDetails memory transferDetails = IPaymentPermit
-            .TransferDetails(100 ether);
-
-        paymentPermit.permitTransferFrom(
-            permit,
-            transferDetails,
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
 
         vm.expectRevert(IPaymentPermit.NonceAlreadyUsed.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            transferDetails,
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testRevertExpired() public {
@@ -111,12 +108,7 @@ contract PaymentPermitTest is Test {
 
         bytes memory signature = _signPermit(permit);
         vm.expectRevert(IPaymentPermit.InvalidTimestamp.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testRevertSignatureError() public {
@@ -128,15 +120,10 @@ contract PaymentPermitTest is Test {
         bytes memory signature = _signPermit(permit);
 
         // Tamper with data
-        permit.payment.maxPayAmount = 200 ether;
+        permit.payment.payAmount = 200 ether;
 
         vm.expectRevert(IPaymentPermit.InvalidSignature.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testRevertBuyerMismatch() public {
@@ -148,12 +135,7 @@ contract PaymentPermitTest is Test {
         bytes memory signature = _signPermit(permit);
 
         vm.expectRevert(IPaymentPermit.BuyerMismatch.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            address(0xDEAD),
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, address(0xDEAD), signature);
     }
 
     function testRevertInvalidKind_Normal() public {
@@ -166,12 +148,7 @@ contract PaymentPermitTest is Test {
         bytes memory signature = _signPermit(permit);
 
         vm.expectRevert(IPaymentPermit.InvalidKind.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testRevertInvalidCaller() public {
@@ -184,29 +161,7 @@ contract PaymentPermitTest is Test {
 
         vm.prank(address(0xBAD));
         vm.expectRevert(IPaymentPermit.InvalidCaller.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
-    }
-
-    function testRevertInvalidAmount() public {
-        IPaymentPermit.PaymentPermitDetails memory permit = _createPermit(
-            100 ether,
-            0,
-            address(this)
-        );
-        bytes memory signature = _signPermit(permit);
-
-        vm.expectRevert(IPaymentPermit.InvalidAmount.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(101 ether), // Exceeds maxPayAmount
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testRevertNotYetValid() public {
@@ -219,12 +174,7 @@ contract PaymentPermitTest is Test {
         bytes memory signature = _signPermit(permit);
 
         vm.expectRevert(IPaymentPermit.InvalidTimestamp.selector);
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testZeroFee() public {
@@ -235,15 +185,10 @@ contract PaymentPermitTest is Test {
         );
         bytes memory signature = _signPermit(permit);
 
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(50 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
 
-        assertEq(token.balanceOf(owner), 1000 ether - 50 ether);
-        assertEq(token.balanceOf(receiver), 50 ether);
+        assertEq(token.balanceOf(owner), 1000 ether - 100 ether);
+        assertEq(token.balanceOf(receiver), 100 ether);
         assertEq(token.balanceOf(feeReceiver), 0);
     }
 
@@ -268,12 +213,7 @@ contract PaymentPermitTest is Test {
         );
 
         vm.expectRevert("Payment failed");
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(100 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     function testFeeTransferFailed() public {
@@ -297,12 +237,7 @@ contract PaymentPermitTest is Test {
         );
 
         vm.expectRevert("Fee failed");
-        paymentPermit.permitTransferFrom(
-            permit,
-            IPaymentPermit.TransferDetails(50 ether),
-            owner,
-            signature
-        );
+        paymentPermit.permitTransferFrom(permit, owner, signature);
     }
 
     // Helpers
@@ -324,7 +259,7 @@ contract PaymentPermitTest is Test {
                 caller: caller,
                 payment: IPaymentPermit.Payment({
                     payToken: address(token),
-                    maxPayAmount: amount,
+                    payAmount: amount,
                     payTo: receiver
                 }),
                 fee: IPaymentPermit.Fee({feeTo: feeReceiver, feeAmount: fee}),
