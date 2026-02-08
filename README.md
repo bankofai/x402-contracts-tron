@@ -44,68 +44,13 @@ Flow: **User signs** `PaymentPermitDetails` (payment, fee, validity, nonce) → 
 
 | Network   | Chain / Environment | PaymentPermit Address |
 |-----------|---------------------|------------------------|
-| **TRON Mainnet** | Mainnet              | `TT8rEWbCoNX7vpEUauxb7rWJsTgs8vDLAn` |
-| **Nile**         | Testnet              | `TFxDcGvS7zfQrS1YzcCMp673ta2NHHzsiH` |
-| **Shasta**       | Testnet              | `TR2XninQ3jsvRRLGTifFyUHTBysffooUjt` |
+| **TRON Mainnet** | Mainnet              | [`TT8rEWbCoNX7vpEUauxb7rWJsTgs8vDLAn`](https://tronscan.org/#/contract/TT8rEWbCoNX7vpEUauxb7rWJsTgs8vDLAn) |
+| **Nile** | Testnet              | [`TFxDcGvS7zfQrS1YzcCMp673ta2NHHzsiH`](https://nile.tronscan.org/#/contract/TFxDcGvS7zfQrS1YzcCMp673ta2NHHzsiH) |
+| **Shasta** | Testnet              | [`TR2XninQ3jsvRRLGTifFyUHTBysffooUjt`](https://shasta.tronscan.org/#/contract/TR2XninQ3jsvRRLGTifFyUHTBysffooUjt) |
 
 - **Mainnet**: Production; use after audit and deployment.
 - **Nile**: Primary testnet for integration and staging.
 - **Shasta**: Alternate testnet.
-
----
-
-## Requirements
-
-- **Node.js** (e.g. v18+)
-- **pnpm** or **npm**
-- **Solidity** `^0.8.20` (project uses 0.8.25 in config)
-- For TRON deploy: [@sun-protocol/sunhat](https://github.com/sun-protocol/sunhat) and a TRON RPC URL + deployer private key
-
----
-
-## Quick Start
-
-### Install
-
-```bash
-pnpm install
-```
-
-Post-install runs `scripts/postinstall.sh` (e.g. submodules or tooling). Ensure it completes successfully.
-
-### Build
-
-```bash
-pnpm run compile
-# or
-forge build
-```
-
-### Test
-
-```bash
-pnpm run test
-# or
-forge test -vvv
-```
-
-### Deploy (TRON)
-
-1. Copy env example and set TRON RPC and deployer key:
-
-   ```bash
-   # .env
-   TRON_RPC_URL=https://nile.trongrid.io/jsonrpc   # or mainnet/shasta
-   PRIVATE_KEY=your_deployer_private_key_hex
-   ```
-
-2. Deploy:
-
-   ```bash
-   pnpm run deploy --tags PaymentPermit
-   ```
-
-Deploy scripts live in `deploy/` (e.g. `01_deploy_PaymentPermit.ts`). Configure `hardhat.config.ts` for mainnet/nile/shasta as needed.
 
 ---
 
