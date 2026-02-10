@@ -45,6 +45,14 @@ const config: HardhatUserConfig = {
       deploy: ['deploy/'], // folder for shasta deploy scripts
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [], // account private key for deploy
     },
+    bsctest: {
+      url: process.env.BSC_TESTNET_RPC_URL || 'https://bsc-testnet.bnbchain.org', // bsc testnet rpc url
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [], // account private key for deploy
+    },
+    bscmain: {
+      url: process.env.BSC_MAINNET_RPC_URL || 'https://bsc-dataseed.binance.org/', // bsc mainnet rpc url
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [], // account private key for deploy
+    },
   },
   tronSolc: {
     enable: true, // enable tron solc compiler
